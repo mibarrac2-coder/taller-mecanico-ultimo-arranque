@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Editar Servicio - El Último Arranque</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f5f9;
+            margin: 0;
+            color: #263238;
+        }
+
+        header {
+            background-color: #17365d;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #17365d;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #17365d;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        a {
+            margin-left: 15px;
+            color: #17365d;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Taller Mecánico El Último Arranque</h1>
+    <p>Modificar servicio</p>
+</header>
+
+<main>
+    <h2>Editar servicio existente</h2>
+
+    <form action="/servicios/actualizar" method="post">
+
+        <input type="hidden"
+               name="idServicio"
+               data-th-value="${servicio.idServicio}">
+
+        <label for="descripcion">
+            Descripción del servicio:
+        </label>
+
+        <input type="text"
+               id="descripcion"
+               name="descripcion"
+               data-th-value="${servicio.descripcion}"
+               maxlength="150"
+               required>
+
+        <label for="costoManoObra">
+            Costo de mano de obra (Q):
+        </label>
+
+        <input type="number"
+               id="costoManoObra"
+               name="costoManoObra"
+               data-th-value="${servicio.costoManoObra}"
+               min="0"
+               max="99999999.99"
+               step="0.01"
+               required>
+
+        <button type="submit">
+            Guardar cambios
+        </button>
+
+        <a href="/servicios">Cancelar</a>
+
+    </form>
+</main>
+
+</body>
+</html>

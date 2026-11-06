@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Servicios - El Último Arranque</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f3f5f9;
+            color: #263238;
+        }
+
+        header {
+            background-color: #17365d;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #17365d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        th {
+            background-color: #e7eef7;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .precio {
+            font-weight: bold;
+            color: #137333;
+        }
+
+        .vacio {
+            padding: 20px;
+            text-align: center;
+            color: #777777;
+        }
+
+        .campo {
+            margin-bottom: 15px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+
+        .boton {
+            display: inline-block;
+            background-color: #17365d;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .boton-editar {
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .boton-eliminar {
+            background-color: #b3261e;
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .acciones {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .acciones form {
+            margin: 0;
+        }
+
+        .mensaje {
+            color: #137333;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #b3261e;
+            font-weight: bold;
+        }
+
+        hr {
+            margin: 35px 0;
+            border: 0;
+            border-top: 1px solid #dddddd;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Taller Mecánico El Último Arranque</h1>
+    <p>Sistema de Gestión de Servicios</p>
+</header>
+
+<main>
+
+    <h2>Registrar nuevo servicio</h2>
+
+    <p class="mensaje"
+       data-th-if="${mensaje}"
+       data-th-text="${mensaje}">
+    </p>
+
+    <p class="error"
+       data-th-if="${error}"
+       data-th-text="${error}">
+    </p>
+
+    <form action="/servicios/guardar" method="post">
+
+        <div class="campo">
+            <label for="descripcion">
+                Descripción del servicio:
+            </label>
+
+            <input type="text"
+                   id="descripcion"
+                   name="descripcion"
+                   maxlength="150"
+                   required>
+        </div>
+
+        <div class="campo">
+            <label for="costoManoObra">
+                Costo de mano de obra (Q):
+            </label>
+
+            <input type="number"
+                   id="costoManoObra"
+                   name="costoManoObra"
+                   min="0"
+                   max="99999999.99"
+                   step="0.01"
+                   required>
+        </div>
+
+        <button type="submit" class="boton">
+            Guardar servicio
+        </button>
+
+    </form>
+
+    <hr>
+
+    <h2>Catálogo de Servicios</h2>
+
+    <p>Servicios registrados en la base de datos MySQL.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripción del servicio</th>
+                <th>Costo de mano de obra</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr data-th-each="servicio : ${servicios}">
+                <td data-th-text="${servicio.idServicio}"></td>
+
+                <td data-th-text="${servicio.descripcion}"></td>
+
+                <td class="precio"
+                    data-th-text="|Q ${servicio.costoManoObra}|">
+                </td>
+
+                <td>
+                    <div class="acciones">
+
+                        <a class="boton boton-editar"
+                           data-th-href="@{/servicios/editar/{id}(id=${servicio.idServicio})}">
+                            Editar
+                        </a>
+
+                        <form action="/servicios/eliminar"
+                              method="post"
+                              onsubmit="return confirm('¿Está seguro de eliminar este servicio?');">
+
+                            <input type="hidden"
+                                   name="idServicio"
+                                   data-th-value="${servicio.idServicio}">
+
+                            <button type="submit"
+                                    class="boton boton-eliminar">
+                                Eliminar
+                            </button>
+                        </form>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="vacio"
+       data-th-if="${#lists.isEmpty(servicios)}">
+        No hay servicios registrados.
+    </p>
+
+</main>
+
+</body>
+</html>
