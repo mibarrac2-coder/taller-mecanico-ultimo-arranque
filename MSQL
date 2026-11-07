@@ -1,0 +1,133 @@
+-- Creación de la base de datos
+CREATE DATABASE IF NOT EXISTS taller CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE taller;
+
+-- 1. Tabla Clientes
+CREATE TABLE clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    correo VARCHAR(100),
+    direccion VARCHAR(255)
+);
+
+-- 2. Tabla Vehículos
+CREATE TABLE vehiculos (
+    id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    placa VARCHAR(20) NOT NULL UNIQUE,
+    marca VARCHAR(50) NOT NULL,
+    modelo VARCHAR(50) NOT NULL,
+    anio INT NOT NULL,
+    CONSTRAINT fk_vehiculo_cliente FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+-- 3. Tabla Mecánicos
+CREATE TABLE mecanicos (
+    id_mecanico INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    especialidad VARCHAR(100)
+);
+
+-- 4. Tabla Repuestos
+CREATE TABLE repuestos (
+    id_repuesto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL,
+    existencia INT NOT NULL CHECK (existencia >= 0)
+);
+
+-- 5. Tabla Servicios
+CREATE TABLE servicios (
+    id_servicio INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_servicio VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    costo_mano_obra DECIMAL(10, 2) NOT NULL
+);
+
+-- 6. Tabla Órdenes de Trabajo (Estado como VARCHAR)
+CREATE TABLE ordenes_trabajo (
+    id_orden INT AUTO_INCREMENT PRIMARY KEY,
+    id_vehiculo INT NOT NULL,
+    id_mecanico INT NOT NULL,
+    fecha_ingreso DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    fecha_entrega DATETIME NULL,
+    descripcion_problema TEXT NOT NULL,
+    estado VARCHAR(30) NOT NULL DEFAULT 'PENDIENTE', -- PENDIENTE, EN PROCESO, FINALIZADA, CANCELADA
+    costo_total DECIMAL(10, 2) DEFAULT 0.00,
+    CONSTRAINT fk_orden_vehiculo FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo),
+    CONSTRAINT fk_orden_mecanico FOREIGN KEY (id_mecanico) REFERENCES mecanicos(id_mecanico)
+);
+
+-- 7. Tabla Detalle Orden - Servicios
+CREATE TABLE detalle_orden_servicios (
+    id_detalle_servicio INT AUTO_INCREMENT PRIMARY KEY,
+    id_orden INT NOT NULL,
+    id_servicio INT NOT NULL,
+    costo_aplicado DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT fk_dos_orden FOREIGN KEY (id_orden) REFERENCES ordenes_trabajo(id_orden),
+    CONSTRAINT fk_dos_servicio FOREIGN KEY (id_servicio) REFERENCES servicios(id_servicio)
+);
+
+-- 8. Tabla Detalle Orden - Repuestos
+CREATE TABLE detalle_orden_repuestos (
+    id_detalle_repuesto INT AUTO_INCREMENT PRIMARY KEY,
+    id_orden INT NOT NULL,
+    id_repuesto INT NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    precio_unitario DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT fk_dor_orden FOREIGN KEY (id_orden) REFERENCES ordenes_trabajo(id_orden),
+    CONSTRAINT fk_dor_repuesto FOREIGN KEY (id_repuesto) REFERENCES repuestos(id_repuesto)
+);
+
+-- Insertar Clientes de prueba
+INSERT INTO clientes (nombres, apellidos, telefono, correo, direccion) VALUES
+('Carlos Alberto', 'Gómez Pérez', '5512-3456', 'carlos.gomez@email.com', 'Zona 10, Ciudad de Guatemala'),
+('María Fernanda', 'López Ruano', '4234-8901', 'mfer.lopez@email.com', 'Zona 4, Mixco');
+
+-- Insertar Vehículos de prueba
+INSERT INTO vehiculos (id_cliente, placa, marca, modelo, anio) VALUES
+(1, 'P-123ABC', 'Toyota', 'Corolla', 2018),
+(2, 'P-987XYZ', 'Honda', 'Civic', 2020);
+
+-- Insertar Mecánicos de prueba
+INSERT INTO mecanicos (nombres, apellidos, telefono, especialidad) VALUES
+('Juan Carlos', 'Martínez Morales', '3112-9988', 'Motor y Diagnóstico Electrónico'),
+('Esteban Raúl', 'Castillo Fuentes', '5844-1122', 'Frenos y Suspensión');
+
+-- Insertar Repuestos de prueba (Existencia con control >= 0)
+INSERT INTO repuestos (nombre, descripcion, precio, existencia) VALUES
+('Filtro de Aceite', 'Filtro estándar para motores 4 cilindros', 45.00, 15),
+('Pastillas de Freno', 'Juego delantero de pastillas cerámicas', 250.00, 8),
+('Aceite Sintético 5W-30', 'Litro de aceite de motor de alta gama', 85.00, 30);
+
+-- Insertar ordenes de trabajo prueba 
+INSERT INTO ordenes_trabajo (id_vehiculo, id_mecanico, descripcion_problema, estado, costo_total) VALUES
+(7, 1, 'Vehículo no enciende por las mañanas, posible revisión de motor y afinación.', 'PENDIENTE', 100.00),
+(8, 2, 'El carro vibra al frenar en carretera y rechina.', 'EN PROCESO', 335.00);
+
+-- 4. Insertar Detalle de Servicios prueba 
+INSERT INTO detalle_orden_servicios (id_orden, id_servicio, costo_aplicado) VALUES
+(7, 1, 100.00),
+(8, 2, 175.00);
+
+-- 3. Insertar Detalle de Repuestos utilizados prueba
+INSERT INTO detalle_orden_repuestos (id_orden, id_repuesto, cantidad, precio_unitario, subtotal) VALUES
+(7, 2, 1, 250.00, 250.00),
+(8, 1, 1, 85.00, 85.00);
+
+
+-- 3. consultas para verificacion de todos los datos ingresados
+Select *from Clientes;
+Select *from vehiculos; 
+Select *from detalle_orden_servicios;
+Select *from servicios; 
+Select *from repuestos; 
+Select *from mecanicos; 
+Select *from ordenes_trabajo;
+Select *from detalle_orden_repuestos;
