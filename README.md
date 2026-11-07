@@ -1,75 +1,21 @@
+# TallerMecanico-ElultimoArranque
 
-# Taller Mecánico El Último Arranque
+Proyecto final de Programación II para gestionar órdenes de trabajo de un taller mecánico. Java 26, Maven, MySQL y presentación web MVC.
 
-## Módulo E - Gestión de Servicios
+Para iniciar en PowerShell desde esta carpeta:
 
-Proyecto Final de Programación II.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Ejecutar.ps1
+```
 
-### Descripción
+Abre http://127.0.0.1:8080/. La configuración local de MySQL está en database.properties (no versionada); usa database.properties.example al instalar en otra computadora.
 
-Este módulo permite administrar los servicios que ofrece un taller mecánico mediante una aplicación web desarrollada en Java.
+- [Guía completa de ejecución, Android y continuación](GUIA_EJECUCION.md)
+- [Diagnóstico inicial](DIAGNOSTICO.md)
+- [Revisión y código completo por archivo](REVISION_ARCHIVOS.md)
+- [Validación y resultados](VALIDACION.md)
+- [Diagramas de clases y base de datos](DIAGRAMAS.md)
 
-Cada servicio contiene un identificador, una descripción y un costo de mano de obra.
+Verificación completa: `powershell -ExecutionPolicy Bypass -File .\herramientas\Verificar.ps1`.
 
-### Funcionalidades
-
-- Registrar nuevos servicios.
-- Consultar los servicios almacenados.
-- Modificar la descripción y el costo.
-- Eliminar servicios.
-- Validar los datos ingresados.
-- Guardar la información en MySQL.
-
-### Tecnologías utilizadas
-
-- Java 21
-- Spring Boot
-- Apache NetBeans
-- MySQL
-- JDBC
-- HTML
-- Thymeleaf
-- Maven
-
-### Requisitos
-
-- JDK 21
-- MySQL Server
-- MySQL Workbench
-- Apache NetBeans o un entorno compatible
-
-### Instalación
-
-1. Descargar el repositorio.
-2. Ejecutar el archivo servicios.sql en MySQL.
-3. Abrir el proyecto Maven.
-4. Configurar la contraseña de MySQL mediante la variable DB_PASSWORD.
-5. Ejecutar la aplicación Spring Boot.
-6. Abrir http://localhost:8080/servicios
-
-### Ejecución en Windows
-
-Desde CMD, ubicado en la carpeta del proyecto:
-
-Configurar la contraseña:
-
-    set /p DB_PASSWORD=Introduce tu contraseña de MySQL:
-
-Iniciar la aplicación:
-
-    mvnw.cmd spring-boot:run
-
-### Arquitectura
-
-El módulo utiliza una estructura basada en MVC:
-
-- Modelo: Servicio.java
-- Acceso a datos: ServicioDAO.java
-- Controlador: ServicioControlador.java
-- Vistas: servicios.html y editar-servicio.html
-
-### Estado del proyecto
-
-El módulo de Gestión de Servicios funciona de manera independiente con MySQL.
-
-La integración con el módulo general de órdenes de trabajo está pendiente.
+Continuar tras una interrupción: `powershell -ExecutionPolicy Bypass -File .\herramientas\Continuar.ps1`.
